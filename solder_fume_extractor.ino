@@ -10,10 +10,12 @@ int outFan = 6;
 int sw = A2;
 
 // LED logic parameters
+int ledFloor = 15;
 int ledHysteresis = 3;
-unsigned long ledOffDelay = 1000;
+unsigned long ledOffDelay = 500;
 
 // Fan logic parameters
+int fanFloor = 40;
 int fanHysteresis = 2;
 unsigned long hardStartDuration = 3000;
 
@@ -65,36 +67,54 @@ unsigned long lastMillisLEDOn = 0;
 
 void handleLEDOn() {
   int valPotLED = 0;
-  int setPotLED = 0;
 
   valPotLED = analogRead(potLED);
   valPotLED = accountHysteresis(previousValPotLED, valPotLED, ledHysteresis);
-  setPotLED = map(valPotLED, 0, 1023, 255, 15);
-  analogWrite(outLED, setPotLED);
+  setLED(valPotLED);
 
   previousValPotLED = valPotLED;
   lastMillisLEDOn = millis();
 }
 
 void handleLEDOff() {
-  analogWrite(outLED, 0);
+  if (lastMillisLEDOn + ledOffDelay <= millis()) {
+    analogWrite(outLED, 0);
+    return;
+  }
+
+  // Prevent LED from going on at startup
+  if (previousValPotLED == 0) {
+    return;
+  }
+  setLED(previousValPotLED);
 }
 
 int previousValPotFan = 0;
 
 void handleFanOn() {
   int valPotFan = 0;
-  int setPotFan = 0;
   
   valPotFan = analogRead(potFan);
   valPotFan = accountHysteresis(previousValPotFan, valPotFan, fanHysteresis);
-  setPotFan = map(valPotFan, 0, 1023, 255, 25);
-  analogWrite(outFan, setPotFan);
+  setFan(valPotFan);
   previousValPotFan = valPotFan;
 }
 
 void handelFanOff() {
   analogWrite(outFan, 0);
+}
+
+
+void setLED(int potVal) {
+  int setVal = 0;
+  setVal = map(potVal, 0, 1023, 255, ledFloor);
+  analogWrite(outLED, setVal);
+}
+
+void setFan(int potVal) {
+  int setVal = 0;
+  setVal = map(potVal, 0, 1023, 255, fanFloor);
+  analogWrite(outFan, setVal);
 }
 
 
