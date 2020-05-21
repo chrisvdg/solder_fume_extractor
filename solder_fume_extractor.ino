@@ -1,10 +1,21 @@
+// Potentiometer inputs
 int potLED = A0;
 int potFan = A1;
 
+// PWM Outputs
 int outLED = 5;
 int outFan = 6;
 
+// Switch
 int sw = A2;
+
+// LED logic parameters
+int ledHysteresis = 3;
+unsigned long ledOffDelay = 1000;
+
+// Fan logic parameters
+int fanHysteresis = 2;
+unsigned long hardStartDuration = 3000;
 
 void setup() {
   pinMode(potLED, INPUT_PULLUP);
@@ -13,8 +24,6 @@ void setup() {
   
   pinMode(outLED, OUTPUT);
   pinMode(outFan, OUTPUT);
-
-//  Serial.begin(9600);  
 }
 
 void loop() {
@@ -39,38 +48,59 @@ void loop() {
 
 
   if (ledOn) {
-//    Serial.println("Led is on");
-    
-    int valPotLED = 0;
-    int setPotLED = 0;
-    valPotLED = analogRead(potLED);
-    setPotLED = map(valPotLED, 0, 1023, 255, 0);
-    analogWrite(outLED, setPotLED);
+    handleLEDOn();
   } else {
-    analogWrite(outLED, 0);
+    handleLEDOff();
   }
 
   if (fanOn) {
-//    Serial.println("Fan is on");
-   
-    int valPotFan = 0;
-    int setPotFan = 0;
-    valPotFan = analogRead(potFan);
-    setPotFan = map(valPotFan, 0, 1023, 255, 25);
-    analogWrite(outFan, setPotFan);
+    handleFanOn();
   } else {
-    analogWrite(outFan, 0);
+    handelFanOff();
   }
+}
 
-//  Serial.println(swVal);
-//  int valPotLED = 0;
-//  valPotLED = analogRead(potLED);
-//  Serial.println(valPotLED);
-//  int valPotFan = 0;
-//  valPotFan = analogRead(potFan);
-//  Serial.println(valPotFan);
-//  Serial.println();
-//  Serial.println();
-//  delay(1000);
+int previousValPotLED = 0;
+unsigned long lastMillisLEDOn = 0;
+
+void handleLEDOn() {
+  int valPotLED = 0;
+  int setPotLED = 0;
+
+  valPotLED = analogRead(potLED);
+  valPotLED = accountHysteresis(previousValPotLED, valPotLED, ledHysteresis);
+  setPotLED = map(valPotLED, 0, 1023, 255, 15);
+  analogWrite(outLED, setPotLED);
+
+  previousValPotLED = valPotLED;
+  lastMillisLEDOn = millis();
+}
+
+void handleLEDOff() {
+  analogWrite(outLED, 0);
+}
+
+int previousValPotFan = 0;
+
+void handleFanOn() {
+  int valPotFan = 0;
+  int setPotFan = 0;
   
+  valPotFan = analogRead(potFan);
+  valPotFan = accountHysteresis(previousValPotFan, valPotFan, fanHysteresis);
+  setPotFan = map(valPotFan, 0, 1023, 255, 25);
+  analogWrite(outFan, setPotFan);
+  previousValPotFan = valPotFan;
+}
+
+void handelFanOff() {
+  analogWrite(outFan, 0);
+}
+
+
+int accountHysteresis(int previousVal, int currentVal, int hysteresis) {
+  if (currentVal < previousVal - hysteresis || currentVal > previousVal + hysteresis) {
+    return currentVal;
+  }
+  return previousVal;
 }
