@@ -15,9 +15,14 @@ int ledHysteresis = 3;
 unsigned long ledOffDelay = 500;
 
 // Fan logic parameters
-int fanFloor = 40;
+int fanFloor = 30;
 int fanHysteresis = 2;
-unsigned long hardStartDuration = 3000;
+unsigned long hardStartDuration = 4000;
+
+struct switchState {
+  bool led;
+  bool fan;
+};
 
 void setup() {
   pinMode(potLED, INPUT_PULLUP);
@@ -33,34 +38,45 @@ void loop() {
   bool fanOn;
 
   int swVal = 0;
+  struct switchState swState;
   swVal = analogRead(sw);
-  if (swVal < 300) {
-    // Switch position 2
-    ledOn = true;
-    fanOn = true;
-  } else if (swVal < 550) {
-    // Switch position 1
-    ledOn = true;
-    fanOn = false;
-  } else {
-    // switch position off
-    ledOn = false;
-    fanOn = false;
-  }
+  swState = getSwitchState(swVal);
 
-
-  if (ledOn) {
+  if (swState.led) {
     handleLEDOn();
   } else {
     handleLEDOff();
   }
 
-  if (fanOn) {
+  if (swState.fan) {
     handleFanOn();
   } else {
     handelFanOff();
   }
 }
+
+// Switch state stuff
+
+struct switchState getSwitchState(int readVal) {
+  struct switchState st;
+  if (readVal < 300) {
+    // Switch position 2
+    st.led = true;
+    st.fan = true;
+  } else if (readVal < 550) {
+    // Switch position 1
+    st.led = true;
+    st.fan = false;
+  } else {
+    // switch position off
+    st.led = false;
+    st.fan = false;
+  }
+
+  return st;
+}
+
+// LED handlers
 
 int previousValPotLED = 0;
 unsigned long lastMillisLEDOn = 0;
@@ -78,7 +94,7 @@ void handleLEDOn() {
 
 void handleLEDOff() {
   if (lastMillisLEDOn + ledOffDelay <= millis()) {
-    analogWrite(outLED, 0);
+    digitalWrite(outLED, LOW);
     return;
   }
 
@@ -89,10 +105,29 @@ void handleLEDOff() {
   setLED(previousValPotLED);
 }
 
+void setLED(int potVal) {
+  int setVal = 0;
+  setVal = map(potVal, 0, 1023, 255, ledFloor);
+  analogWrite(outLED, setVal);
+}
+
+
+
+// Fan handlers
+
 int previousValPotFan = 0;
+unsigned long fanOnTime = 0;
 
 void handleFanOn() {
   int valPotFan = 0;
+
+  if (fanOnTime == 0) {
+    fanOnTime = millis();
+  }
+
+  if (millis() < fanOnTime + hardStartDuration) {
+    digitalWrite(outFan, HIGH);
+  }
   
   valPotFan = analogRead(potFan);
   valPotFan = accountHysteresis(previousValPotFan, valPotFan, fanHysteresis);
@@ -101,14 +136,8 @@ void handleFanOn() {
 }
 
 void handelFanOff() {
-  analogWrite(outFan, 0);
-}
-
-
-void setLED(int potVal) {
-  int setVal = 0;
-  setVal = map(potVal, 0, 1023, 255, ledFloor);
-  analogWrite(outLED, setVal);
+  fanOnTime = 0;
+  digitalWrite(outFan, LOW);
 }
 
 void setFan(int potVal) {
@@ -117,6 +146,8 @@ void setFan(int potVal) {
   analogWrite(outFan, setVal);
 }
 
+
+// Generic helpers
 
 int accountHysteresis(int previousVal, int currentVal, int hysteresis) {
   if (currentVal < previousVal - hysteresis || currentVal > previousVal + hysteresis) {
