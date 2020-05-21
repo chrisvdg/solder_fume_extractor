@@ -20,7 +20,7 @@ Because the fan needs more energy to get started than to continue running, run t
 
 ## Schematics
 
-***To be drawn and added***
+***To be drawn digitally and added here***
 
 
 ## Design remarks
