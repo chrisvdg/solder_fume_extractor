@@ -1,13 +1,13 @@
-// Potentiometer inputs
-int potLED = A0;
-int potFan = A1;
+// Regulator inputs
+int potLED = A3;
+int potFan = A2;
 
 // PWM Outputs
-int outLED = 5;
-int outFan = 6;
+int outLED = 0;
+int outFan = 1;
 
-// Switch
-int sw = A2;
+// Switch input
+int sw = A1;
 
 // LED logic parameters
 int ledFloor = 15;
@@ -15,7 +15,7 @@ int ledHysteresis = 3;
 unsigned long ledOffDelay = 500;
 
 // Fan logic parameters
-int fanFloor = 30;
+int fanFloor = 35;
 int fanHysteresis = 2;
 unsigned long hardStartDuration = 4000;
 

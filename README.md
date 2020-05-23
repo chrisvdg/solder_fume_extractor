@@ -18,6 +18,20 @@ Both the fans and leds don't switch on at all on the lower end of the PWM output
 
 Because the fan needs more energy to get started than to continue running, run the fan at full power for the first few seconds when switched on, afterwards use it's potentiometer to regulate the output.
 
+## Programming the ATTINY85
+
+For the programming of the ATTINY85, a standard, official arduino UNO was used as ISP.
+
+The following guide was used to be able to program the ATTINY85 via the Arduino uno:  
+https://www.instructables.com/id/How-to-Program-an-Attiny85-From-an-Arduino-Uno/
+
+Which I assume was based of this guide:  
+http://highlowtech.org/?p=1695
+
+**NOTE**: I used a 1 MHz clock instead of 8 Mhz in the guides, as this resulted in the lowest fan noise.
+
+Using 8 or 16 MHz works fine too, but you may need to accepts the PWM fan noise or place a capacitor over the fan output.
+
 ## Schematics
 
 ***To be drawn digitally and added here***
