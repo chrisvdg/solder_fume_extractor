@@ -28,7 +28,7 @@ https://www.instructables.com/id/How-to-Program-an-Attiny85-From-an-Arduino-Uno/
 Which I assume was based of this guide:  
 http://highlowtech.org/?p=1695
 
-**NOTE**: I used a 1 MHz clock instead of 8 Mhz in the guides, as this resulted in the lowest fan noise.
+**NOTE**: I used a 1 MHz clock instead of the 8 MHz used in the guides, as this resulted in the lowest fan noise.
 
 Using 8 or 16 MHz works fine too, but you may need to accepts the PWM fan noise or place a capacitor over the fan output.
 
