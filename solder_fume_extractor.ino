@@ -1,13 +1,11 @@
-// Regulator inputs
+// Inputs
 int potLED = A3;
 int potFan = A2;
+int sw = A1;
 
-// PWM Outputs
+// Outputs
 int outLED = 0;
 int outFan = 1;
-
-// Switch input
-int sw = A1;
 
 // LED logic parameters
 int ledFloor = 15;
@@ -34,9 +32,6 @@ void setup() {
 }
 
 void loop() {
-  bool ledOn;
-  bool fanOn;
-
   int swVal = 0;
   struct switchState swState;
   swVal = analogRead(sw);
@@ -55,7 +50,7 @@ void loop() {
   }
 }
 
-// Switch state stuff
+// Switch handlers
 
 struct switchState getSwitchState(int readVal) {
   struct switchState st;
@@ -112,7 +107,6 @@ void setLED(int potVal) {
 }
 
 
-
 // Fan handlers
 
 int previousValPotFan = 0;
@@ -145,7 +139,6 @@ void setFan(int potVal) {
   setVal = map(potVal, 0, 1023, 255, fanFloor);
   analogWrite(outFan, setVal);
 }
-
 
 // Generic helpers
 
