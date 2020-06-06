@@ -36,7 +36,7 @@ Howeven in my testing, this was not very consistent nor reliable.
 
 ## Schematics
 
-***To be drawn digitally and added here***
+![](./assets/wiring.jpg)
 
 
 ## Design remarks
