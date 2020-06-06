@@ -13,7 +13,7 @@ int ledHysteresis = 3;
 unsigned long ledOffDelay = 500;
 
 // Fan logic parameters
-int fanFloor = 35;
+int fanFloor = 40;
 int fanHysteresis = 2;
 unsigned long hardStartDuration = 4000;
 

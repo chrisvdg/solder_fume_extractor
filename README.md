@@ -28,9 +28,11 @@ https://www.instructables.com/id/How-to-Program-an-Attiny85-From-an-Arduino-Uno/
 Which I assume was based of this guide:  
 http://highlowtech.org/?p=1695
 
-**NOTE**: I used a 1 MHz clock instead of the 8 MHz used in the guides, as this resulted in the lowest fan noise.
-
-Using 8 or 16 MHz works fine too, but you may need to accepts the PWM fan noise or place a capacitor over the fan output.
+**NOTE**: Depending on chip frequency set, there can be a tradeoff between LED flicker or PWM fan noise.
+A 1 MHz clock will result in no of very little PWM fan noise but LED flicker may be noticable.
+At an 8 or 16 MHz clock some PWM fan noise on the lower RPM's can be heard.
+A capacitor over the output of the fan can also be placed to smoothen the output signal and reduce/eliminate the fan noise.
+Howeven in my testing, this was not very consistent nor reliable.
 
 ## Schematics
 
