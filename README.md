@@ -37,10 +37,3 @@ Howeven in my testing, this was not very consistent nor reliable.
 ## Schematics
 
 ![](./assets/wiring.jpg)
-
-
-## Design remarks
-
-There is no 'main switch' in the setup of this project and the microcontroller is still on when the switch is put in the 0 position.  
-If someone was to copy this project and leave the fume extractor plugged into mains, it is recommended to add a switch at the mains side of the power transformer.  
-When the switch is off, it will illiminate power being drawn from mains when not in use.
