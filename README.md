@@ -36,4 +36,4 @@ Howeven in my testing, this was not very consistent nor reliable.
 
 ## Schematics
 
-![](./assets/wiring.jpg)
+![](./assets/wiring.png)
